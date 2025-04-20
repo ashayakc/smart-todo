@@ -9,6 +9,7 @@ import { Todo } from '../../models/todo.model';
   standalone: true,
   imports: [CommonModule, RouterModule],  // ✅ Include CommonModule here
   templateUrl: './todo-list.component.html',
+  styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
