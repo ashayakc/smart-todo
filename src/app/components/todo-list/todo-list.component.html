@@ -1,0 +1,17 @@
+<div class="container mt-4">
+    <h2>Todo List</h2>
+    <button class="btn btn-primary mb-3" routerLink="/add">Add New Todo</button>
+  
+    <div *ngFor="let todo of todos" class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ todo.title }}</h5>
+        <p class="card-text">{{ todo.description }}</p>
+        <p class="card-text">
+          <small class="text-muted">Status: {{ todo.completed ? 'Completed' : 'Pending' }}</small>
+        </p>
+        <button class="btn btn-sm btn-warning me-2" [routerLink]="['/edit', todo.id]">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteTodo(todo.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+  
