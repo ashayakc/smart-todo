@@ -1,47 +1,37 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Todo } from '../models/todo.model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoService {
-  private todos: Todo[] = [
-    { id: 1, title: 'Learn Angular', description: 'Understand components and services', completed: false },
-    { id: 2, title: 'Build a Todo App', description: 'With CRUD operations', completed: false }
-  ];
+  private apiUrl = 'http://localhost:5290/api/todo';
 
-  constructor() {}
+  private httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
+  constructor(private http: HttpClient) { }
 
   getTodos(): Observable<Todo[]> {
-    return of(this.todos);
+    return this.http.get<Todo[]>(this.apiUrl);
   }
 
-  getTodo(id: number): Observable<Todo | undefined> {
-    const todo = this.todos.find(t => t.id === id);
-    return of(todo);
+  getTodo(id: number): Observable<Todo> {
+    return this.http.get<Todo>(`${this.apiUrl}/${id}`);
   }
 
   addTodo(todo: Todo): Observable<Todo> {
-    todo.id = this.generateId();
-    this.todos.push(todo);
-    return of(todo);
+    return this.http.post<Todo>(this.apiUrl, todo, this.httpOptions);
   }
 
-  updateTodo(updated: Todo): Observable<Todo> {
-    const index = this.todos.findIndex(t => t.id === updated.id);
-    if (index > -1) {
-      this.todos[index] = updated;
-    }
-    return of(updated);
+  updateTodo(id: number, todo: Todo): Observable<Todo> {
+    return this.http.put<Todo>(`${this.apiUrl}/${id}`, todo, this.httpOptions);
   }
 
-  deleteTodo(id: number): Observable<boolean> {
-    this.todos = this.todos.filter(t => t.id !== id);
-    return of(true);
-  }
-
-  private generateId(): number {
-    return this.todos.length > 0 ? Math.max(...this.todos.map(t => t.id)) + 1 : 1;
+  deleteTodo(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

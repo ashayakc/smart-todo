@@ -46,7 +46,7 @@ export class TodoFormComponent implements OnInit {
 
     this.todo.title = trimmedTitle;
     if (this.isEditMode) {
-      this.todoService.updateTodo(this.todo).subscribe(() => this.router.navigate(['/']));
+      this.todoService.updateTodo(this.todo.id, this.todo).subscribe(() => this.router.navigate(['/']));
     } else {
       this.todoService.addTodo(this.todo).subscribe(() => this.router.navigate(['/']));
     }

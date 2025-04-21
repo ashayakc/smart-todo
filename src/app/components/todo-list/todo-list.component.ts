@@ -33,7 +33,7 @@ export class TodoListComponent implements OnInit {
 
   // Update an existing todo
   editTodo(updatedTodo: Todo): void {
-    this.todoService.updateTodo(updatedTodo).subscribe(() => {
+    this.todoService.updateTodo(updatedTodo.id, updatedTodo).subscribe(() => {
       this.loadTodos();  // Reload todos after updating
     });
   }
