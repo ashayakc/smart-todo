@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -11,14 +11,23 @@ import { TodoService } from '../../services/todo.service';
   templateUrl: './chatbot.component.html',
   styleUrl: './chatbot.component.scss'
 })
-export class ChatbotComponent {
+export class ChatbotComponent implements AfterViewInit {
   messages: { text: string; isUser: boolean }[] = [];
   newMessage = '';
   backendUrl = 'http://localhost:5290/api/todo/process'; // Assuming backend is running on port 5000
   @Output() todosUpdated = new EventEmitter<void>();
   todos: any;
+  @ViewChild('chatInput') chatInput: ElementRef | undefined;
 
   constructor(private http: HttpClient, private todoService: TodoService) {}
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.chatInput) {
+        this.chatInput.nativeElement.focus();
+      }
+    }, 500);
+  }
 
   sendMessage() {
     if (this.newMessage.trim() !== '') {
