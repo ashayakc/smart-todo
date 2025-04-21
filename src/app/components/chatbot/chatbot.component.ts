@@ -44,7 +44,6 @@ export class ChatbotComponent {
           }
           this.messages.push({ text: botResponse, isUser: false });
           this.todosUpdated.emit(); // Emit event after successful response
-          this.loadTodos(); // Load todos after bot response
         },
         (error) => {
           console.error('Error fetching bot response:', error);
