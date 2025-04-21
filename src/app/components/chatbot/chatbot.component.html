@@ -1,6 +1,9 @@
 <div class="chatbot-section">
   <h2>Chatbot</h2>
-  <div class="chat-messages">
+  <div class="info-tile">
+    Ask bot to perform any activity related to your todo list. You can ask to perform add, update, delete, count the todos by category in your todo list
+  </div>
+  <div #chatMessages class="chat-messages">
     <div *ngFor="let message of messages" class="chat-message" [class.user-message]="message.isUser" [class.bot-message]="!message.isUser">
       {{ message.text }}
     </div>

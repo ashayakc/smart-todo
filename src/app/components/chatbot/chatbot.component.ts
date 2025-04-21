@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -11,13 +11,16 @@ import { TodoService } from '../../services/todo.service';
   templateUrl: './chatbot.component.html',
   styleUrl: './chatbot.component.scss'
 })
-export class ChatbotComponent implements AfterViewInit {
+export class ChatbotComponent implements AfterViewInit, AfterViewChecked {
   messages: { text: string; isUser: boolean }[] = [];
   newMessage = '';
   backendUrl = 'http://localhost:5290/api/todo/process'; // Assuming backend is running on port 5000
   @Output() todosUpdated = new EventEmitter<void>();
   todos: any;
   @ViewChild('chatInput') chatInput: ElementRef | undefined;
+  @ViewChild('chatMessages') chatMessages: ElementRef | undefined;
+
+  private isScrolledToBottom: boolean = true;
 
   constructor(private http: HttpClient, private todoService: TodoService) {}
 
@@ -29,9 +32,22 @@ export class ChatbotComponent implements AfterViewInit {
     }, 500);
   }
 
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    if (this.chatMessages && !this.isScrolledToBottom) {
+      try {
+        this.chatMessages.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
+      } catch(err) { }
+    }
+  }
+
   sendMessage() {
     if (this.newMessage.trim() !== '') {
       this.messages.push({ text: this.newMessage, isUser: true });
+      this.isScrolledToBottom = false;
       this.getBotResponse(this.newMessage);
       this.newMessage = '';
     }
@@ -52,6 +68,7 @@ export class ChatbotComponent implements AfterViewInit {
             botResponse += `: ${response.data.count}`;
           }
           this.messages.push({ text: botResponse, isUser: false });
+          this.isScrolledToBottom = false;
           this.todosUpdated.emit(); // Emit event after successful response
         },
         (error) => {
